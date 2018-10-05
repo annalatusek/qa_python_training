@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from selenium import webdriver
 import unittest
-from contact import Contact
+from model.contact import Contact
 
 
 class TestAddContact(unittest.TestCase):
