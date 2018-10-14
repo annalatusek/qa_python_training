@@ -6,7 +6,8 @@ class ContactHelper:
 
     def start_from_homepage(self):
         wd = self.app.wd
-        wd.find_element_by_xpath("//a[contains(text(),'home')]").click()
+        if not (wd.current_url.endswith("/addressbook/") and len(wd.find_elements_by_name("searchform")) > 0):
+            wd.find_element_by_xpath("//a[contains(text(),'home')]").click()
 
     def create(self, contact):
         wd = self.app.wd
