@@ -3,8 +3,14 @@ class ContactHelper:
     def __init__(self, app):
         self.app = app
 
+
+    def start_from_homepage(self):
+        wd = self.app.wd
+        wd.find_element_by_xpath("//a[contains(text(),'home')]").click()
+
     def create(self, contact):
         wd = self.app.wd
+        self.start_from_homepage()
         # init contact creation
         wd.find_element_by_link_text("add new").click()
         self.fill_contact_form(contact)
@@ -14,6 +20,7 @@ class ContactHelper:
 
     def delete_first_contact(self):
         wd = self.app.wd
+        self.start_from_homepage()
         self.select_first_contact()
         # submit deletion
         wd.find_element_by_xpath("//input[@value='Delete']").click()
@@ -21,6 +28,7 @@ class ContactHelper:
 
     def modify_first_contact(self, new_contact_data):
         wd = self.app.wd
+        self.start_from_homepage()
         self.select_first_contact()
         # edit contact
         wd.find_element_by_xpath("//img[@alt='Edit']").click()
