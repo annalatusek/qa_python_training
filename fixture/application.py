@@ -9,7 +9,7 @@ class Application:
     def __init__(self, browser, base_url):
 
         if browser == "chrome":
-            self.wd = webdriver.Chrome()
+            self.wd = webdriver.Chrome(executable_path=r"C:\TestFiles\chromedriver.exe")
         elif browser == "firefox":
             self.wd = webdriver.Firefox()
         elif browser == "ie":
