@@ -2,12 +2,12 @@
 from model.contact import Contact
 
 
-def test_add_contact(app, json_contacts):
+def test_add_contact(app, db, json_contacts):
     contact = json_contacts
-    old_contacts = app.contact.get_contact_list()
+    old_contacts = db.get_contact_list()
     app.contact.create(contact)
     assert len(old_contacts) + 1 == app.contact.count()
-    new_contacts = app.contact.get_contact_list()
+    new_contacts = db.get_contact_list()
     all_phones = contact.home + '\n' + contact.mobile + '\n' + contact.work + '\n' + contact.phone2
     all_emails = contact.email + '\n' + contact.email2 + '\n' + contact.email3
     new_contact_id = max(c.id for c in new_contacts)
