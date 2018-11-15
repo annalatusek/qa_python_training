@@ -12,10 +12,6 @@ try:
 finally:
     pass #db.destroy()
 
-# import mysql.connector
-#
-#
-# connection = mysql.connector.connect(host="127.0.0.1", database="addressbook", user="root", password="")
 
 # import pymysql.cursors
 #
@@ -29,4 +25,3 @@ finally:
 #         print(row)
 # finally:
 #     connection.close()
-
