@@ -1,5 +1,6 @@
 from model.contact import Contact
 import re
+import random
 
 
 class ContactHelper:
@@ -43,6 +44,11 @@ class ContactHelper:
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
         self.contact_cache = None
+
+    def remove_contact_from_group(self, id):
+        wd = self.app.wd
+        self.select_contact_by_id(id)
+        wd.find_element_by_xpath("//input[@name='remove']").click()
 
     def modify_first_contact(self, new_contact_data):
         wd = self.app.wd
@@ -196,6 +202,11 @@ class ContactHelper:
         cell = row.find_elements_by_tag_name("td")[6]
         cell.find_element_by_tag_name("a").click()
 
+    def open_contact_view_by_id(self, id):
+        wd = self.app.wd
+        self.start_from_homepage()
+        wd.find_element_by_xpath("//a[contains(href,'edit.php?id=%s')]" % id and "(//img[@alt='Details'])").click()
+
     def get_contact_info_from_edit_page(self, index):
         wd = self.app.wd
         self.open_contact_to_edit_by_index(index)
@@ -222,3 +233,34 @@ class ContactHelper:
         mobile = re.search("M: (.*)", text).group(1)
         phone2 = re.search("P: (.*)", text).group(1)
         return Contact(home=home, work=work, mobile=mobile, phone2=phone2)
+
+    @todo
+    def check_if_contact_is_a_group_member(self, id, one_group):
+        wd = self.app.wd
+        self.open_contact_view_by_id(id)
+        text = wd.find_element_by_id("content").text
+        random_group_id = one_group.id
+        member_of = re.search("./index.php?group=%s" % random_group_id, text).group(1)
+
+    @todo
+    def select_random_group_of_membership()
+
+
+    def remove_contact_from_the_group(self, id):
+        # go to selected group membership page
+        self.remove_contact_from_group(id)
+
+    def add_contact_to_the_group(self, id, one_group):
+        wd = self.app.wd
+        self.start_from_homepage()
+        self.select_contact_by_id(id)
+        random_group_id = one_group.id
+        print(random_group_id)
+        random_group_name = one_group.name
+        print(random_group_name)
+        # add contact to the group of random id
+        wd.find_element_by_xpath("//select[@name='to_group']/option[@value='%s']" % random_group_id).click()
+        wd.find_element_by_xpath("//input[@name='add']").click()
+        wd.find_element_by_link_text("group page \"%s\"" % random_group_name).click()
+        self.contact_cache = None
+

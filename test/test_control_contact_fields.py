@@ -20,7 +20,7 @@ def test_contact_compare_home_page_with_db_data(app, db):
                 assert contact_from_home_page.all_phones_from_home_page == merge_phones_like_on_home_page(
                     contact_from_db)
                 assert contact_from_home_page.all_emails_from_home_page == merge_emails_like_on_home_page(
-                    contact_from_db)
+                     contact_from_db)
 
 
 def test_contact_compare_home_and_view_page(app):
