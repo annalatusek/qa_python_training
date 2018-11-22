@@ -1,7 +1,7 @@
 from model.contact import Contact
 import re
 import random
-
+from selenium.common.exceptions import NoSuchElementException
 
 class ContactHelper:
 
@@ -10,8 +10,9 @@ class ContactHelper:
 
     def start_from_homepage(self):
         wd = self.app.wd
-        if not (wd.current_url.endswith("/addressbook/") and len(wd.find_elements_by_name("searchform")) > 0):
-            wd.find_element_by_xpath("//a[contains(text(),'home')]").click()
+        # if not (wd.current_url.endswith("/addressbook/") and len(wd.find_elements_by_name("searchform")) > 0):
+        #     wd.find_element_by_xpath("//a[contains(text(),'home')]").click()
+        wd.find_element_by_xpath("//img[@alt='Addressbook']").click()
 
     def create(self, contact):
         wd = self.app.wd
@@ -102,8 +103,8 @@ class ContactHelper:
 
     def select_contact_by_id(self, id):
         wd = self.app.wd
-        # wd.find_element_by_css_selector("input[value='%s']" % id).click()
-        wd.find_element_by_xpath("//*[@id='%s']" % id).click()
+        wd.find_element_by_css_selector("input[id='%s']" % id).click()
+        # wd.find_element_by_xpath("//*[@id='%s']" % id).click()
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
@@ -234,17 +235,21 @@ class ContactHelper:
         phone2 = re.search("P: (.*)", text).group(1)
         return Contact(home=home, work=work, mobile=mobile, phone2=phone2)
 
-    @todo
-    def check_if_contact_is_a_group_member(self, id, one_group):
+    def get_list_of_groups_for_contact(self, db, id):
         wd = self.app.wd
         self.open_contact_view_by_id(id)
-        text = wd.find_element_by_id("content").text
-        random_group_id = one_group.id
-        member_of = re.search("./index.php?group=%s" % random_group_id, text).group(1)
+        all_links = wd.find_elements_by_xpath("//a[@href]")
+        links_of_groups_where_contact_is_connected = []
+        for link in all_links:
+            if "/index.php?group=" in link.get_attribute("href"):
+                links_of_groups_where_contact_is_connected.append(link)
+        return links_of_groups_where_contact_is_connected
 
-    @todo
-    def select_random_group_of_membership()
-
+    def select_random_group_from_the_list(self, links_of_groups_where_contact_is_connected):
+        group_with_removed_contact = random.choice(links_of_groups_where_contact_is_connected)
+        group_id = re.search(r'\d{0,5}$', group_with_removed_contact.get_attribute("href")).group()
+        group_with_removed_contact.click()
+        return group_id
 
     def remove_contact_from_the_group(self, id):
         # go to selected group membership page
@@ -262,5 +267,6 @@ class ContactHelper:
         wd.find_element_by_xpath("//select[@name='to_group']/option[@value='%s']" % random_group_id).click()
         wd.find_element_by_xpath("//input[@name='add']").click()
         wd.find_element_by_link_text("group page \"%s\"" % random_group_name).click()
+        #  go back to the homepage
         self.contact_cache = None
 
